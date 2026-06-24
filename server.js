@@ -60,6 +60,13 @@ function safeEqual(a, b) {
   try { return crypto.timingSafeEqual(ba, bb); } catch (_) { return false; }
 }
 
+// Tolerate a UTF-8 BOM (Windows editors / PowerShell Set-Content add one) before JSON.parse.
+function parseJsonLoose(text) {
+  if (typeof text === 'string' && text.charCodeAt(0) === 0xFEFF)
+    text = text.slice(1);
+  return JSON.parse(text);
+}
+
 function validateManifest(m) {
   const errs = [];
   if (!m || typeof m !== 'object') return ['manifest is not an object'];
@@ -79,7 +86,7 @@ function loadManifest() {
   for (const p of [RUNTIME_PATH, MANIFEST_PATH]) {
     try {
       if (fs.existsSync(p)) {
-        const m = JSON.parse(fs.readFileSync(p, 'utf8'));
+        const m = parseJsonLoose(fs.readFileSync(p, 'utf8'));
         const errs = validateManifest(m);
         if (errs.length) { log(`WARN ${p} invalid: ${errs.join('; ')}`); continue; }
         log(`loaded manifest from ${path.basename(p)} -> ${m.latest_version} (mandatory=${m.mandatory})`);
@@ -163,7 +170,7 @@ const server = http.createServer((req, res) => {
     return readBody(req, (err, raw) => {
       if (err) return send(res, 413, { error: err.message });
       let next;
-      try { next = JSON.parse(raw || '{}'); } catch (_) { return send(res, 400, { error: 'invalid json' }); }
+      try { next = parseJsonLoose(raw || '{}'); } catch (_) { return send(res, 400, { error: 'invalid json' }); }
       const errs = validateManifest(next);
       if (errs.length) return send(res, 422, { error: 'validation failed', details: errs });
       next.published_at = nowIso();
