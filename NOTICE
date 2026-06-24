@@ -1,0 +1,14 @@
+Arabicss-softphone-update
+=========================
+
+The code in THIS repository (the manifest micro-backend `server.js`, the release tooling
+under `scripts/`, the GitHub Actions workflow, and the docs) is original work licensed under
+the MIT License (see LICENSE).
+
+It exists to distribute updates for the ArabicssSoftphone Windows client, which is derived
+from YATE (Yet Another Telephony Engine), Copyright (C) Null Team, and is distributed under
+the GNU General Public License. The GPL obligations apply to the softphone application and its
+source — not to this independent update service, which merely serves a JSON manifest and
+release binaries and links against nothing from the application.
+
+YATE: https://yate.null.ro/

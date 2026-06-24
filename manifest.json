@@ -1,0 +1,9 @@
+{
+  "latest_version": "H_10",
+  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_10/ArabicssSoftphone_Setup_H_10.exe",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "mandatory": false,
+  "notes": "ArabicssSoftphone baseline H_10. Bump latest_version to H_11+ and set mandatory=true to force the fleet to update.",
+  "min_supported": "H_10",
+  "published_at": "2026-06-24"
+}

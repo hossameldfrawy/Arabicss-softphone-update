@@ -1,0 +1,194 @@
+name: release-pc
+
+# Cut a Windows softphone release and publish its manifest.
+#   - tag push  H_11 / H_12 / ...   -> full release
+#   - manual    workflow_dispatch    -> release a specific version on demand
+#
+# ARCHITECTURE NOTE (read docs/DEPLOY.md): this repo is INTENTIONALLY isolated from the
+# main C++/Qt app source. Compiling the setup .exe therefore needs the main-app repo,
+# which is wired in ONLY via the optional `build` job below (repo variable MAIN_APP_REPO
+# + secret MAIN_APP_DEPLOY_KEY). If that is not configured, skip the build and attach a
+# pre-built ArabicssSoftphone_Setup_<version>.exe to the tag's release — the `release`
+# job will hash it, publish the manifest, and ping Railway.
+
+on:
+  push:
+    tags:
+      - 'H_*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (strict H_<number>, e.g. H_11)'
+        required: true
+      mandatory:
+        description: 'Force the fleet to update (mandatory gate)?'
+        type: boolean
+        default: false
+      notes:
+        description: 'Release notes'
+        required: false
+
+permissions:
+  contents: write   # create the GitHub Release + push the manifest.json commit
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # OPTIONAL: compile the production setup .exe from the (private) main app repo.
+  # Gated on the MAIN_APP_REPO repo variable so the pipeline still works as pure
+  # release-automation when you build the .exe locally instead.
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build Windows setup (.exe)
+    if: ${{ vars.MAIN_APP_REPO != '' }}
+    runs-on: windows-latest
+    steps:
+      - name: Checkout update repo
+        uses: actions/checkout@v4
+
+      - name: Checkout main app source (private)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.MAIN_APP_REPO }}
+          ssh-key: ${{ secrets.MAIN_APP_DEPLOY_KEY }}
+          path: app-src
+
+      - name: Set up MSVC (v143/v145 toolset, x64)
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Install Qt 6 (MSVC x64)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.*'
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          modules: 'qtnetworkauth'
+
+      - name: Build solution + pack installer
+        shell: pwsh
+        working-directory: app-src
+        env:
+          # Build-time secrets injected into the C++ gate (see modules/qt4/updater.cpp).
+          ARABICSS_UPDATE_URL: ${{ vars.ARABICSS_UPDATE_URL }}
+          ARABICSS_UPDATE_TOKEN: ${{ secrets.UPDATE_API_TOKEN }}
+        run: |
+          # HEAVY / FRAGILE: the Yate Qt6 build is built serially (no /m) with the v145
+          # toolset. Tune these paths to your runner. This is a best-effort scaffold —
+          # see docs/DEPLOY.md "Building in CI" for the known caveats.
+          $ErrorActionPreference = 'Stop'
+          $defs = ""
+          if ($env:ARABICSS_UPDATE_URL)   { $defs += " /D ARABICSS_UPDATE_URL=\""$($env:ARABICSS_UPDATE_URL)\""" }
+          if ($env:ARABICSS_UPDATE_TOKEN) { $defs += " /D ARABICSS_UPDATE_TOKEN=\""$($env:ARABICSS_UPDATE_TOKEN)\""" }
+          msbuild windows\YATE.sln /t:Libyate;_updater;Qt4Client /p:Configuration=Release /p:Platform=x64
+          powershell -ExecutionPolicy Bypass -File windows\installer\build-arabicss-setup.ps1 `
+            -OutFile "$env:GITHUB_WORKSPACE\dist\ArabicssSoftphone_Setup_${{ github.event.inputs.version || github.ref_name }}.exe"
+
+      - name: Upload setup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: setup-exe
+          path: dist/*.exe
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------------
+  # Publish the GitHub Release, hash the installer, update + commit manifest.json,
+  # and push it to the live Railway service via the secured webhook.
+  # ---------------------------------------------------------------------------
+  release:
+    name: Publish release + manifest
+    needs: [build]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Resolve release inputs
+        id: vars
+        run: |
+          VER="${{ github.event.inputs.version || github.ref_name }}"
+          if ! echo "$VER" | grep -Eq '^H_[0-9]+$'; then
+            echo "::error::version '$VER' must match H_<number> (e.g. H_11)"; exit 1
+          fi
+          MAND="${{ github.event.inputs.mandatory || 'false' }}"
+          ASSET="ArabicssSoftphone_Setup_${VER}.exe"
+          URL="${{ github.server_url }}/${{ github.repository }}/releases/download/${VER}/${ASSET}"
+          echo "version=$VER"       >> "$GITHUB_OUTPUT"
+          echo "mandatory=$MAND"    >> "$GITHUB_OUTPUT"
+          echo "asset=$ASSET"       >> "$GITHUB_OUTPUT"
+          echo "url=$URL"           >> "$GITHUB_OUTPUT"
+
+      - name: Download build artifact (if the build job ran)
+        uses: actions/download-artifact@v4
+        with:
+          name: setup-exe
+          path: dist
+        continue-on-error: true
+
+      - name: Ensure installer is present
+        id: installer
+        run: |
+          mkdir -p dist
+          FOUND="$(ls dist/*.exe 2>/dev/null | head -n1 || true)"
+          if [ -z "$FOUND" ]; then
+            echo "::error::No installer found. Either configure the build job (MAIN_APP_REPO) \
+or attach ${{ steps.vars.outputs.asset }} to the release before running this workflow."
+            exit 1
+          fi
+          # normalise the file name to the canonical asset name
+          if [ "$(basename "$FOUND")" != "${{ steps.vars.outputs.asset }}" ]; then
+            mv "$FOUND" "dist/${{ steps.vars.outputs.asset }}"
+          fi
+          echo "path=dist/${{ steps.vars.outputs.asset }}" >> "$GITHUB_OUTPUT"
+
+      - name: Compute SHA-256 + write manifest.json
+        run: |
+          node scripts/update-manifest.mjs \
+            --file "${{ steps.installer.outputs.path }}" \
+            --version "${{ steps.vars.outputs.version }}" \
+            --url "${{ steps.vars.outputs.url }}" \
+            --mandatory "${{ steps.vars.outputs.mandatory }}" \
+            --notes "${{ github.event.inputs.notes || format('ArabicssSoftphone {0}', steps.vars.outputs.version) }}" \
+            --out manifest.json
+
+      - name: Publish GitHub Release + upload installer
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.version }}
+          name: ArabicssSoftphone ${{ steps.vars.outputs.version }}
+          body_path: manifest.json
+          files: ${{ steps.installer.outputs.path }}
+          fail_on_unmatched_files: true
+
+      - name: Commit manifest.json (durable source of truth)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add manifest.json
+          if git diff --cached --quiet; then
+            echo "manifest.json unchanged"
+          else
+            git commit -m "release: publish ${{ steps.vars.outputs.version }} manifest [skip ci]"
+            git push origin HEAD:${{ github.event.repository.default_branch }}
+          fi
+
+      - name: Notify Railway (instant publish via secured webhook)
+        if: ${{ vars.RAILWAY_WEBHOOK_URL != '' }}
+        env:
+          RAILWAY_WEBHOOK_URL: ${{ vars.RAILWAY_WEBHOOK_URL }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+        run: |
+          node scripts/update-manifest.mjs \
+            --sha256 "$(sha256sum "${{ steps.installer.outputs.path }}" | cut -d' ' -f1)" \
+            --version "${{ steps.vars.outputs.version }}" \
+            --url "${{ steps.vars.outputs.url }}" \
+            --mandatory "${{ steps.vars.outputs.mandatory }}" \
+            --notes "${{ github.event.inputs.notes || format('ArabicssSoftphone {0}', steps.vars.outputs.version) }}" \
+            --out manifest.json --webhook
