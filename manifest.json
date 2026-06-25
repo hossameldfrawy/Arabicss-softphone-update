@@ -1,9 +1,9 @@
 {
-  "latest_version": "H_11",
-  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_11/ArabicssSoftphone_Setup_H_11.exe",
-  "sha256": "d07c39b406d4036e1a643a90e87b5d3736f230edc142ebd00b86e2e681b6ef3f",
+  "latest_version": "H_10",
+  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_10/ArabicssSoftphone_Setup_H_10.exe",
+  "sha256": "f88d79034761c6982655a59bfbba685533746a541978203dfee2828177caa6cc",
   "mandatory": false,
-  "notes": "H_11: restricted agent menu bar (Settings -> Options only). Optional/canary rollout; will be made mandatory after agent verification.",
+  "notes": "H_11 HELD: its installer (SfxStub ClearUserYate) deletes %APPDATA%/Yate/client_accounts.conf, wiping agent SIP accounts. Rolled back to H_10 until the preserve-list is fixed and an upgrade is verified to keep accounts.",
   "min_supported": "H_10",
   "published_at": "2026-06-25"
 }
