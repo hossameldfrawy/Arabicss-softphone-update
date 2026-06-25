@@ -2,8 +2,8 @@
   "latest_version": "H_12",
   "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_12/ArabicssSoftphone_Setup_H_12.exe",
   "sha256": "80a8cb3286c34702fb3c43b1d8e1d6577ea9454fd56225508ff4879532d82e0f",
-  "mandatory": false,
-  "notes": "H_12: restricted agent menu bar (Settings -> Options only); installer preserves client_accounts.conf. Supersedes withdrawn H_11. Optional/canary rollout; mandatory only after account-survival verification.",
+  "mandatory": true,
+  "notes": "H_12: restricted agent menu bar (Settings -> Options only); installer preserves client_accounts.conf. Supersedes withdrawn H_11. MANDATORY: fleet is gated to H_12 on next launch (Update Now only).",
   "min_supported": "H_10",
   "published_at": "2026-06-25"
 }
