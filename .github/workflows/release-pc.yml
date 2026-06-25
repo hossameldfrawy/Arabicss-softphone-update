@@ -138,8 +138,7 @@ jobs:
           mkdir -p dist
           FOUND="$(ls dist/*.exe 2>/dev/null | head -n1 || true)"
           if [ -z "$FOUND" ]; then
-            echo "::error::No installer found. Either configure the build job (MAIN_APP_REPO) \
-or attach ${{ steps.vars.outputs.asset }} to the release before running this workflow."
+            echo "::error::No installer found. Either configure the build job (MAIN_APP_REPO) or attach ${{ steps.vars.outputs.asset }} to the release before running this workflow."
             exit 1
           fi
           # normalise the file name to the canonical asset name
@@ -147,6 +146,38 @@ or attach ${{ steps.vars.outputs.asset }} to the release before running this wor
             mv "$FOUND" "dist/${{ steps.vars.outputs.asset }}"
           fi
           echo "path=dist/${{ steps.vars.outputs.asset }}" >> "$GITHUB_OUTPUT"
+
+      # ---------------------------------------------------------------------------
+      # OPTIONAL Authenticode signing. INERT by default — runs ONLY when the repo
+      # variable SIGN_RELEASE == 'true'. Activate later with NO code change:
+      #   gh variable set SIGN_RELEASE        --repo <repo> --body true
+      #   base64 -w0 cert.pfx | gh secret set WINDOWS_CERT_PFX_BASE64 --repo <repo>
+      #   gh secret set WINDOWS_CERT_PASSWORD --repo <repo>
+      # Runs BEFORE the SHA-256 step on purpose: signing mutates the binary, so the
+      # manifest must hash the SIGNED file. Until enabled, the build stays green.
+      # ---------------------------------------------------------------------------
+      - name: Code-sign installer (Authenticode) [inert until SIGN_RELEASE=true]
+        if: ${{ vars.SIGN_RELEASE == 'true' }}
+        env:
+          CERT_B64:  ${{ secrets.WINDOWS_CERT_PFX_BASE64 }}
+          CERT_PASS: ${{ secrets.WINDOWS_CERT_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CERT_B64:-}" ] || [ -z "${CERT_PASS:-}" ]; then
+            echo "::error::SIGN_RELEASE=true but WINDOWS_CERT_PFX_BASE64 / WINDOWS_CERT_PASSWORD are unset"; exit 1
+          fi
+          sudo apt-get update && sudo apt-get install -y osslsigncode
+          printf '%s' "$CERT_B64" | base64 -d > "$RUNNER_TEMP/cert.pfx"
+          IN="${{ steps.installer.outputs.path }}"
+          osslsigncode sign \
+            -pkcs12 "$RUNNER_TEMP/cert.pfx" -pass "$CERT_PASS" \
+            -n "ArabicssSoftphone" -i "https://arabicss.com" \
+            -ts "http://timestamp.digicert.com" \
+            -h sha256 -in "$IN" -out "$IN.signed"
+          mv -f "$IN.signed" "$IN"
+          rm -f "$RUNNER_TEMP/cert.pfx"
+          osslsigncode verify "$IN" || echo "::warning::verify returned non-zero (CA chain may be incomplete on the runner)"
+          echo "Authenticode-signed $IN"
 
       - name: Compute SHA-256 + write manifest.json
         run: |
