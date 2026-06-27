@@ -1,9 +1,9 @@
 {
-  "latest_version": "H_12",
-  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_12/ArabicssSoftphone_Setup_H_12.exe",
-  "sha256": "80a8cb3286c34702fb3c43b1d8e1d6577ea9454fd56225508ff4879532d82e0f",
+  "latest_version": "H_13",
+  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_13/ArabicssSoftphone_Setup_H_13.exe",
+  "sha256": "77791d81d6131bc4e94ff274441d02fb0b47d69978bbe613f6d2af5a2c78268c",
   "mandatory": true,
-  "notes": "H_12: restricted agent menu bar (Settings -> Options only); installer preserves client_accounts.conf. Supersedes withdrawn H_11. MANDATORY: fleet is gated to H_12 on next launch (Update Now only).",
+  "notes": "H_13: dynamic menu-bar version badge (V : H_13) + single-source branding header + macOS .dmg build prep. Installer preserves client_accounts.conf (same account-safe stub as H_12). MANDATORY: fleet gated to H_13 on next launch (Update Now only).",
   "min_supported": "H_10",
-  "published_at": "2026-06-25"
+  "published_at": "2026-06-27T23:42:26.003Z"
 }
