@@ -1,9 +1,9 @@
 {
-  "latest_version": "H_13",
-  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_13/ArabicssSoftphone_Setup_H_13.exe",
-  "sha256": "77791d81d6131bc4e94ff274441d02fb0b47d69978bbe613f6d2af5a2c78268c",
+  "latest_version": "H_14",
+  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_14/ArabicssSoftphone_Setup_H_14.exe",
+  "sha256": "276fc9c5359ec4a4fdc4beabf994e3a0f335130d996cee79d7cb69233d510f87",
   "mandatory": true,
-  "notes": "H_13: dynamic menu-bar version badge (V : H_13) + single-source branding header + macOS .dmg build prep. Installer preserves client_accounts.conf (same account-safe stub as H_12). MANDATORY: fleet gated to H_13 on next launch (Update Now only).",
+  "notes": "H_14: high-DPI notification popup fix - title/body font sizing moved to a styleSheet pixel rule so the popup stays correct at 100/125/150% Windows scaling, plus a CI guardrail keeping skin fonts pixel-based. Installer preserves client_accounts.conf (same account-safe stub as H_13). MANDATORY: fleet gated to H_14 on next launch.",
   "min_supported": "H_10",
-  "published_at": "2026-06-27T23:42:26.003Z"
+  "published_at": "2026-06-30T15:37:57.736Z"
 }
