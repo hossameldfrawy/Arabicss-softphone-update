@@ -2,8 +2,8 @@
   "latest_version": "H_15",
   "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_15/ArabicssSoftphone_H_15.exe",
   "sha256": "ccbe7ebde2ead8685b02f1893fa845dffd90d78313d54bd9b310340658d70261",
-  "mandatory": false,
-  "notes": "H_15: constant-physical 450x720 window verified across 1080p, 2K and 1366x768 via a 4-case DPI regression matrix; no dynamic/percentage scaling. Installer preserves client_accounts.conf (same account-safe stub as H_13). Canary (optional) - fleet-wide mandatory pending one-machine verification.",
+  "mandatory": true,
+  "notes": "H_15: constant-physical 450x720 window verified across 1080p, 2K and 1366x768 via a 4-case DPI regression matrix; no dynamic/percentage scaling. Installer preserves client_accounts.conf (same account-safe stub as H_13). MANDATORY: fleet gated to H_15 on next launch (canary verified - accounts preserved, no update-loop, DPI sharp at 125%).",
   "min_supported": "H_10",
-  "published_at": "2026-07-02T12:38:13.020Z"
+  "published_at": "2026-07-02T13:35:36.846Z"
 }
