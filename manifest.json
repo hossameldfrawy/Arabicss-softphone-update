@@ -1,9 +1,9 @@
 {
-  "latest_version": "H_15",
-  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_15/ArabicssSoftphone_H_15.exe",
-  "sha256": "ccbe7ebde2ead8685b02f1893fa845dffd90d78313d54bd9b310340658d70261",
+  "latest_version": "H_17",
+  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_17/ArabicssSoftphone_H_17.exe",
+  "sha256": "2a7a764d46bdc4d08751180095b542c4a4859b0c59656a091b14b8f84d0f8bc2",
   "mandatory": true,
-  "notes": "ROLLBACK H_16 -> H_15 (mandatory): reverting the fleet to the verified-stable H_15 build. Stops H_16 reaching clean H_14/H_15 agents. Installer preserves client_accounts.conf (account-safe stub).",
+  "notes": "H_17 (fleet-drain / stability reset, MANDATORY): supersedes H_16. Carries the proven stable H_15 client (account dialog OPEN, unclipped UI, all layouts operational). H_17 > H_16, so active H_16 boxes forward-update and reset to the stable baseline, clearing the H_16 deadlock. Installer hardened against in-place overlay staleness (cache-wipe of old app tree + retry-overwrite of locked DLLs/skins + Add/Remove Programs version refresh). Preserves %APPDATA%\\\\Yate\\\\client_accounts.conf.",
   "min_supported": "H_10",
-  "published_at": "2026-07-05T12:16:36.250Z"
+  "published_at": "2026-07-05T13:05:03.977Z"
 }
