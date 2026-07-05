@@ -1,9 +1,9 @@
 {
   "latest_version": "H_17",
   "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_17/ArabicssSoftphone_H_17.exe",
-  "sha256": "2a7a764d46bdc4d08751180095b542c4a4859b0c59656a091b14b8f84d0f8bc2",
+  "sha256": "d698ebfd6750af9239f01d06033412f6e1f0845d6af7e412130ebc8a0faf8e13",
   "mandatory": true,
-  "notes": "H_17 (fleet-drain / stability reset, MANDATORY): supersedes H_16. Carries the proven stable H_15 client (account dialog OPEN, unclipped UI, all layouts operational). H_17 > H_16, so active H_16 boxes forward-update and reset to the stable baseline, clearing the H_16 deadlock. Installer hardened against in-place overlay staleness (cache-wipe of old app tree + retry-overwrite of locked DLLs/skins + Add/Remove Programs version refresh). Preserves %APPDATA%\\\\Yate\\\\client_accounts.conf.",
+  "notes": "H_17 DEFINITIVE (mandatory): bidirectional update engine (Railway manifest is authoritative in BOTH directions - upgrades and forced downgrades) + Auto-Answer incoming-call popup suppression + Account Modification Lockout with dual-password matrix (Admin + Master, salted-SHA-256, no plaintext). Installer force-purges legacy skin/DLL cache + refreshes the Control Panel version. Preserves client_accounts.conf.",
   "min_supported": "H_10",
-  "published_at": "2026-07-05T13:05:03.977Z"
+  "published_at": "2026-07-05T14:01:05.852Z"
 }
