@@ -1,9 +1,9 @@
 {
-  "latest_version": "H_16",
-  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_16/ArabicssSoftphone_H_16.exe",
-  "sha256": "37d794d5c45bdb970eb717ec69afecd490ffa989bdd29f9d1b9e28889d117da7",
+  "latest_version": "H_15",
+  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_15/ArabicssSoftphone_H_15.exe",
+  "sha256": "ccbe7ebde2ead8685b02f1893fa845dffd90d78313d54bd9b310340658d70261",
   "mandatory": true,
-  "notes": "H_16 MANDATORY (fleet gated): Auto-Answer suppresses the incoming-call Accept/Decline popup when it will take the call, plus Account Modification Lockout - only the account Name is editable; changing any other field (Username/Password/Server/Protocol/Trunk/Save-Password) requires the administrator override password at Save. Installer preserves client_accounts.conf. Canary verified by Hossam (accounts preserved, both features working); fleet updates to H_16 on next launch.",
+  "notes": "ROLLBACK H_16 -> H_15 (mandatory): reverting the fleet to the verified-stable H_15 build. Stops H_16 reaching clean H_14/H_15 agents. Installer preserves client_accounts.conf (account-safe stub).",
   "min_supported": "H_10",
-  "published_at": "2026-07-05T12:04:32.679Z"
+  "published_at": "2026-07-05T12:16:36.250Z"
 }
