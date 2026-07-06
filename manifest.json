@@ -1,9 +1,9 @@
 {
-  "latest_version": "H_17",
-  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_17/ArabicssSoftphone_H_17.exe",
-  "sha256": "d698ebfd6750af9239f01d06033412f6e1f0845d6af7e412130ebc8a0faf8e13",
+  "latest_version": "H_18",
+  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_18/ArabicssSoftphone_H_18.exe",
+  "sha256": "2e12be33b4cf91749fbb02f8e1d1d44723926cc95393f06802de44eb2560bea7",
   "mandatory": true,
-  "notes": "H_17 DEFINITIVE (mandatory) - re-promoted after the H_15 downgrade test. Bidirectional update engine + Auto-Answer popup suppression + Account Modification Lockout (dual-password: admin Arabicss@2026 / master Arabicss@2017, salted-SHA-256, no plaintext). Installer force-purges legacy skin/DLL cache + refreshes Control Panel version. Preserves client_accounts.conf.",
+  "notes": "H_18 (mandatory): Add-Account seamless-save fix - creating a NEW account no longer prompts for a password; the dual-password lock (admin Arabicss@2026 / master Arabicss@2017, salted-SHA-256) now applies ONLY to modifying an existing account's locked fields. Bidirectional update engine + Auto-Answer popup suppression retained. Preserves client_accounts.conf.",
   "min_supported": "H_10",
-  "published_at": "2026-07-05T14:28:54.094Z"
+  "published_at": "2026-07-06T09:52:54.225Z"
 }
