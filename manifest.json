@@ -1,9 +1,9 @@
 {
-  "latest_version": "H_19",
-  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_19/ArabicssSoftphone_H_19.exe",
-  "sha256": "0d2a1138cfcd3b335bb2c27c655d330d040a811d0ee0e97db9503249c27d0d2a",
+  "latest_version": "H_20",
+  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_20/ArabicssSoftphone_H_20.exe",
+  "sha256": "22c192b0144023a0a6d0c2669417849ad00cf4263f0b4163ab464f5fab4313a6",
   "mandatory": false,
-  "notes": "ArabicssSoftphone H_19 (optional update): Accounts now correctly show your saved Outbound Routing Trunk (Trunk 8/9) when you open an account to edit it. The incoming Ringer now boots OFF by default (re-enable any time in Settings > Telephony). This update is dismissible - click 'Later' to keep working; you'll be reminded on the next launch. Your saved accounts are preserved.",
+  "notes": "ArabicssSoftphone H_20 (optional audio update): The incoming Ringer is ON by default again - you'll hear incoming calls ring out of the box (change it any time in Settings > Telephony; your choice is remembered). 'Generate ringing on outgoing calls' now defaults OFF. This update is dismissible - click 'Later' to keep working; you'll be reminded next launch. Your saved accounts are preserved.",
   "min_supported": "H_10",
-  "published_at": "2026-07-07T20:09:06.296Z"
+  "published_at": "2026-07-08T11:46:37.541Z"
 }
