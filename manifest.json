@@ -1,9 +1,9 @@
 {
-  "latest_version": "H_20",
-  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_20/ArabicssSoftphone_H_20.exe",
-  "sha256": "22c192b0144023a0a6d0c2669417849ad00cf4263f0b4163ab464f5fab4313a6",
+  "latest_version": "H_21",
+  "download_url": "https://github.com/hossameldfrawy/Arabicss-softphone-update/releases/download/H_21/ArabicssSoftphone_H_21.exe",
+  "sha256": "81fbc62423cf5dd2853b2bbf3595a8a7427ddf4cc7d4828eaec77b8c6770f41b",
   "mandatory": false,
-  "notes": "ArabicssSoftphone H_20 (optional audio update): The incoming Ringer is ON by default again - you'll hear incoming calls ring out of the box (change it any time in Settings > Telephony; your choice is remembered). 'Generate ringing on outgoing calls' now defaults OFF. This update is dismissible - click 'Later' to keep working; you'll be reminded next launch. Your saved accounts are preserved.",
+  "notes": "ArabicssSoftphone H_21: The incoming Ringer is now always ON at launch so no agent can miss a call, and 'Generate ringing on outgoing calls' is off. Updates are more reliable - this fixes the 'Download failed' / missing Qt platform plugin error by verifying the new version is complete before replacing your current one, so a failed update never leaves you broken. Optional: click 'Later' to keep working; you'll be reminded next launch. Your saved accounts are preserved.",
   "min_supported": "H_10",
-  "published_at": "2026-07-08T11:46:37.541Z"
+  "published_at": "2026-07-09T13:08:25.929Z"
 }
